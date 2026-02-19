@@ -7,6 +7,8 @@ const path = require("path");
 
 const { app, BrowserWindow, Menu, shell } = electron;
 
+require("@electron/remote/main").initialize();
+
 let splash;
 
 require("electron-reload")(__dirname, {
@@ -31,6 +33,8 @@ app.on("ready", () => {
     frame: false,
     titleBarStyle: "hidden",
   });
+
+  require("@electron/remote/main").enable(mainWindow.webContents);
 
   // Splash window properties
   splash = new BrowserWindow({
@@ -81,21 +85,21 @@ const template = [
   // { role: 'appMenu' }
   ...(isMac
     ? [
-        {
-          label: app.name,
-          submenu: [
-            { role: "about" },
-            { type: "separator" },
-            { role: "services" },
-            { type: "separator" },
-            { role: "hide" },
-            { role: "hideothers" },
-            { role: "unhide" },
-            { type: "separator" },
-            { role: "quit" },
-          ],
-        },
-      ]
+      {
+        label: app.name,
+        submenu: [
+          { role: "about" },
+          { type: "separator" },
+          { role: "services" },
+          { type: "separator" },
+          { role: "hide" },
+          { role: "hideothers" },
+          { role: "unhide" },
+          { type: "separator" },
+          { role: "quit" },
+        ],
+      },
+    ]
     : []),
   // { role: 'fileMenu' }
   {
