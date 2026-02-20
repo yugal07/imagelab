@@ -35,7 +35,7 @@ class DrawCircle extends OpenCvOperator {
    * @returns {Mat}
    */
   compute(image) {
-    let p1 = new this.cv2.Point(this.#centerPointX, this.#centerPointY);
+    const p1 = new this.cv2.Point(this.#centerPointX, this.#centerPointY);
     this.cv2.circle(
       image,
       p1,

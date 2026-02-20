@@ -16,18 +16,18 @@ class DrawLine extends OpenCvOperator {
     super(type, id);
   }
 
-  setParams(type, value) {
-    if (type === "thickness") {
+  setParams(param, value) {
+    if (param === "thickness") {
       this.#thickNess = value;
-    } else if (type === "rgbcolors_input") {
+    } else if (param === "rgbcolors_input") {
       this.#lineColor = hexToRgb(value);
-    } else if (type === "starting_point_x1") {
+    } else if (param === "starting_point_x1") {
       this.#point_x1 = value;
-    } else if (type === "starting_point_y1") {
+    } else if (param === "starting_point_y1") {
       this.#point_y1 = value;
-    } else if (type === "ending_point_x1") {
+    } else if (param === "ending_point_x") {
       this.#point_x2 = value;
-    } else if (type === "ending_point_y2") {
+    } else if (param === "ending_point_y") {
       this.#point_y2 = value;
     }
   }
@@ -39,8 +39,8 @@ class DrawLine extends OpenCvOperator {
    * @returns
    */
   compute(image) {
-    let p1 = new this.cv2.Point(this.#point_x1, this.#point_y1);
-    let p2 = new this.cv2.Point(this.#point_x2, this.#point_y2);
+    const p1 = new this.cv2.Point(this.#point_x1, this.#point_y1);
+    const p2 = new this.cv2.Point(this.#point_x2, this.#point_y2);
     this.cv2.line(
       image,
       p1,

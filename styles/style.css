@@ -1,353 +1,643 @@
 /* =================================================================*/
-/* Light and Dark modes color definitions: */
+/* Design Tokens — Light Mode (default)                            */
 /* =================================================================*/
-
-/* Light mode colors used in building UI*/
 :root {
-  --primary-color: white;
-  --secondary-color: #0054a6;
-  --toolbox-bg: #0054a6;
-  --bg-color: #e8f2fc;
-  --icon-filter: sepia(1) hue-rotate(169deg) saturate(3) brightness(0.6);
-  --thin-lines-color: rgb(160, 160, 160);
-  --label-color: white;
-  --category-color: #035fbb;
-  --wave-color: #1b2440;
+  /* Surfaces */
+  --color-bg: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-border: #e2e4e9;
+
+  /* Text */
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #4a4a5a;
+  --color-text-muted: #9196a1;
+
+  /* Accent */
+  --color-accent: #6366f1;
+  --color-accent-subtle: rgba(99, 102, 241, 0.08);
+
+  /* Status */
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+
+  /* Toolbox */
+  --color-toolbox-bg: #f1f3f5;
+  --color-toolbox-text: #4a4a5a;
+  --color-toolbox-icon: #9196a1;
+  --color-toolbox-active: rgba(99, 102, 241, 0.08);
+  --color-toolbox-icon-active: #6366f1;
+
+  /* Titlebar */
+  --color-titlebar-bg: #f1f3f5;
+
+  /* Misc */
+  --icon-filter: brightness(0) saturate(100%) invert(16%) sepia(10%) saturate(500%) hue-rotate(200deg);
+  --color-scrollbar-thumb: #c4c7cc;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  /* Radii */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+
+  /* Layout */
+  --titlebar-height: 28px;
+
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-xs: 10px;
+  --font-sm: 11px;
+  --font-base: 13px;
+  --font-md: 14px;
+
+  /* Spacing */
+  --space-xs: 2px;
+  --space-sm: 4px;
+  --space-md: 8px;
+  --space-lg: 12px;
+  --space-xl: 16px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+
+  /* Wave */
+  --wave-color: #0f1117;
 }
 
-/* Dark mode colors used in building UI*/
+/* =================================================================*/
+/* Design Tokens — Dark Mode                                       */
+/* =================================================================*/
 .dark-mode {
-  --primary-color: #2a3556;
-  --secondary-color: white;
-  --toolbox-bg: #0e162c;
-  --bg-color: #1b2440;
+  --color-bg: #0f1117;
+  --color-surface: #1a1d27;
+  --color-border: #2a2d3a;
+
+  --color-text-primary: #e4e4e7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #63636e;
+
+  --color-accent: #818cf8;
+  --color-accent-subtle: rgba(129, 140, 248, 0.1);
+
+  --color-toolbox-bg: #12141c;
+  --color-toolbox-text: rgba(255, 255, 255, 0.6);
+  --color-toolbox-icon: rgba(255, 255, 255, 0.4);
+  --color-toolbox-active: rgba(255, 255, 255, 0.08);
+  --color-toolbox-icon-active: #818cf8;
+
+  --color-titlebar-bg: #12141c;
+
   --icon-filter: brightness(0) invert(1);
-  --thin-lines-color: #3a4977;
-  --label-color: white;
-  --category-color: #1f2b4b;
-  --wave-color: #e8f2fc;
+  --color-scrollbar-thumb: #3a3d4a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --wave-color: #f8f9fa;
 }
 
 /* =================================================================*/
-/* styling panes except blockly workspace*/
+/* Reset & Base                                                    */
 /* =================================================================*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow: hidden;
+  height: 100vh;
+}
 
 body {
-  background-color: #e8f2fc;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-.preview-pane {
-  width: 350px;
-  min-width: 300px;
-  height: 35vh;
-  min-height: 330px;
-  padding-top: 7px;
-  text-align: center;
-  background-color: var(--primary-color);
-  border-radius: 0.5rem;
-  color: var(--secondary-color);
-  font-size: 15px;
-  font-family: sans-serif;
-  font-weight: bold;
+/* =================================================================*/
+/* Layout — Navbar                                                 */
+/* =================================================================*/
+.app-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
-.properties-pane {
-  width: 350px;
-  min-width: 300px;
-  height:30vh;
-  min-height: 250px;
-  padding-top: 7px;
-  margin-top: 7px;
-  text-align: center;
-  background-color: var(--primary-color);
-  border-radius: 0.5rem;
-  color: var(--secondary-color);
-  font-size: 15px;
-  font-family: sans-serif;
-  font-weight: bold;
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.download-button {
-  width: 350px;
-  min-width: 300px;
-  height: 40px;
-  padding-top: 7px;
-  margin-top: 2px;
-  text-align: center;
-  background-color: var(--primary-color);
-  border-radius: 0.5rem;
-  color: var(--secondary-color);
-  font-size: 15px;
-  font-family: sans-serif;
-  font-weight: bold;
+/* =================================================================*/
+/* Layout — Main Content                                           */
+/* =================================================================*/
+.app-main {
+  display: flex;
+  height: calc(100vh - 36px - var(--titlebar-height));
+  gap: 3px;
+  padding: 3px;
 }
 
+.main-left {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  min-width: 0;
+}
+
+.main-left-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.main-right {
+  width: clamp(280px, 25vw, 380px);
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* =================================================================*/
+/* Pane Base                                                       */
+/* =================================================================*/
+.pane {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  overflow: hidden;
+  contain: layout style;
+}
+
+/* =================================================================*/
+/* Playground Pane (Blockly workspace)                              */
+/* =================================================================*/
+.playground-pane {
+  flex: 1;
+  position: relative;
+  will-change: transform;
+}
+
+.playground-pane #blocklyDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* =================================================================*/
+/* Information Pane                                                */
+/* =================================================================*/
 .information-pane {
-  width: auto;
-  min-width: 700px;
-  height: 7vh;
-  margin-top: 7px;
-  padding-left: 15px;
-  padding-top: 3px;
-  padding-right: 3px;
-  padding-bottom: 3px;
-  text-align: left;
-  background-color: #ccc;
-  border-radius: 0.5rem;
-  font-family: sans-serif;
-  font-weight: bold;
-  color: var(--primary-color);
+  padding: 10px 16px;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  font-family: var(--font-family);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
-/* the separators in preview andproperties panes */
+.information-pane p {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.information-pane p#operator_name {
+  font-size: var(--font-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.information-pane p#operator_description {
+  font-size: var(--font-sm);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.information-pane--active {
+  border-color: var(--color-accent);
+  background: var(--color-accent-subtle);
+}
+
+/* =================================================================*/
+/* Preview Pane                                                    */
+/* =================================================================*/
+.preview-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  flex: 1;
+}
+
+.pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--color-border);
+  min-height: 30px;
+}
+
+.pane-title {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.pane-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.image-preview-div {
+  flex: 1;
+  padding: 8px;
+  overflow: auto;
+  position: relative;
+}
+
+.image-preview-div img,
+.image-preview-div canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px 0 4px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* =================================================================*/
+/* Properties Pane                                                 */
+/* =================================================================*/
+.properties-pane {
+  min-height: 180px;
+  overflow-y: auto;
+  color: var(--color-text-primary);
+  font-size: var(--font-base);
+  font-family: var(--font-family);
+}
+
+/* =================================================================*/
+/* Icon Buttons                                                    */
+/* =================================================================*/
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  background: transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  user-select: none;
+  border: none;
+  vertical-align: middle;
+}
+
+.icon-btn:hover {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+}
+
+.icon-btn--success {
+  color: var(--color-success);
+}
+
+.icon-btn--success:hover {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--color-success);
+}
+
+.icon-btn--danger {
+  color: var(--color-danger);
+}
+
+.icon-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-danger);
+}
+
+/* =================================================================*/
+/* Separators                                                      */
+/* =================================================================*/
 .hr {
   width: 90%;
-  color: var(--thin-lines-color);
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 0 auto;
 }
 
 /* =================================================================*/
-/* styling blockly components like toolbox, flyout, workspace and blocks*/
+/* Custom Sidebar                                                  */
 /* =================================================================*/
+.custom-sidebar {
+  width: clamp(200px, 18vw, 280px);
+  min-width: 200px;
+  background: var(--color-toolbox-bg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid var(--color-border);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  padding: 4px 0;
+}
 
-/* these lines are changing colors of zooming and trash in workspace*/
-.blocklyZoom>image,
-.blocklyZoom>svg>image,
+.sidebar-category + .sidebar-category {
+  margin-top: 2px;
+}
+
+/* Category header */
+.sidebar-category-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-fast);
+}
+
+.sidebar-category-header:hover {
+  background: var(--color-toolbox-active);
+}
+
+.sidebar-category-icon {
+  font-size: var(--font-md);
+  color: var(--color-toolbox-icon);
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar-category-name {
+  flex: 1;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-toolbox-text);
+  letter-spacing: 0.02em;
+}
+
+.sidebar-category-count {
+  font-size: var(--font-xs);
+  color: var(--color-toolbox-icon);
+  background: var(--color-accent-subtle);
+  padding: 1px 6px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.sidebar-category-chevron {
+  font-size: 14px;
+  color: var(--color-toolbox-icon);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-category--expanded > .sidebar-category-header .sidebar-category-chevron {
+  transform: rotate(90deg);
+}
+
+.sidebar-category--expanded > .sidebar-category-header .sidebar-category-icon {
+  color: var(--color-toolbox-icon-active);
+}
+
+.sidebar-category--expanded > .sidebar-category-header .sidebar-category-name {
+  color: var(--color-text-primary);
+}
+
+/* Category body — accordion */
+.sidebar-category-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-category--expanded > .sidebar-category-body {
+  max-height: 600px;
+}
+
+/* Block items */
+.sidebar-block-item {
+  padding: 4px 8px;
+  cursor: grab;
+  transition: background var(--transition-fast);
+  overflow: visible;
+}
+
+.sidebar-block-item svg {
+  pointer-events: none;
+}
+
+.sidebar-block-item:hover {
+  background: var(--color-toolbox-active);
+}
+
+.sidebar-block-item:active {
+  cursor: grabbing;
+}
+
+/* Drag ghost */
+.sidebar-drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  padding: 5px 12px;
+  font-size: var(--font-sm);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+/* =================================================================*/
+/* Blockly — Workspace                                             */
+/* =================================================================*/
+.blocklySvg {
+  background-color: var(--color-bg);
+}
+
+.blocklyFlyoutBackground {
+  fill: var(--color-surface);
+  stroke: var(--color-border);
+}
+
+.blocklyMainBackground {
+  stroke-width: 1;
+}
+
+.blocklyScrollbarHorizontal,
+.blocklyScrollbarVertical {
+  display: none !important;
+}
+
+.injectionDiv {
+  border-radius: var(--radius-md);
+}
+
+/* Zoom & trash controls */
+.blocklyZoom > image,
+.blocklyZoom > svg > image,
 .blocklyTrash {
   filter: var(--icon-filter);
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.blocklyZoom > image:hover,
+.blocklyZoom > svg > image:hover,
+.blocklyTrash:hover {
   opacity: 1;
 }
 
-/* that colors flyout that contains blocks */
-.blocklyFlyoutBackground {
-  fill: var(--primary-color);
-  stroke: var(--thin-lines-color);
-}
-
-/* this is the div that is the parent for all workspace components */
-.injectionDiv {
-  border-radius: 0.5rem;
-}
-
-/*that part adds very small stroke to workspace to beautify it*/
- .blocklyMainBackground {
-  stroke-width: 1;
-  stroke: var(--primary-color);
-} 
-
-/*style of text in blocks */
-/* .zelos-renderer.classic-theme .blocklyText {
-   fill: white;
-   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-   font-size: 16px;
- } */
-
-/* style of title of category in its flyout and that works only on using continuous toolbox plugin*/
-/*.zelos-renderer.classic-theme .blocklyFlyoutLabelText {
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  font-size: 22px;
-  fill: var(--secondary-color);
-}*/
-
-/* style of toolbox that contains categories in it */
-.blocklyToolboxDiv {
-  padding-top: 15px;
-  background-color: var(--toolbox-bg);
-  height: 96.5%;
-}
-
-/* style of titles of categories */
-.blocklyTreeLabel {
-  /*display: none;  if we need no titles in categories buttons*/
-  color: var(--label-color);
-  font-size: 10px;
-  font-weight: bold;
-}
-
-table {
-  width: 100%;
-  /* border-spacing: 0px; */
-}
-
-/* Adds padding around the categories buttons */
-.blocklyToolboxContents {
-  padding: 1em;
-}
-
-/* Adds space between the categories, rounds the corners and adds space around the label. */
-.blocklyTreeRow {
-  /*width: 30px; // when using icons without text*/
-  padding: 3px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 3px white;
-  background-color: var(--category-color);
-}
-
-/* Changes color of the icons in categories buttons to suit light/dark modes. */
-.customIcon {
-  color: var(--label-color);
-  font-size: x-large;
-}
-
-/* Stacks the icon on top of the label. */
-.blocklyTreeRowContentContainer {
-  align-items: center;
-  padding-top: 4px;
-  padding-left: 2px;
-
-}
-
-/* the background of the whole workspace that user drop blocks into*/
-.blocklySvg {
-  background-color: var(--primary-color);
-}
-
 /* =================================================================*/
-/* styling all icons in the interface except those in blockly toolbox*/
+/* Theme Toggle & Wave Animation                                   */
 /* =================================================================*/
-
-.mdi-file-plus-outline,
-.mdi-folder-open-outline,
-.mdi-theme-light-dark {
-  color: var(--secondary-color);
-  margin-left: 1%;
-  font-size: 30px;
-  vertical-align: super;
-  cursor: pointer;
-}
-
-.mdi-play-circle-outline,
-.mdi-replay {
-  cursor: pointer;
-}
-
-.mdi-plus-circle-outline,
-.mdi-minus-circle-outline {
-  text-shadow: 0px 0px 5px var(--primary-color) !important;
-}
-
-.mdi:hover {
-  text-shadow: 0px 0px 3px rgb(155, 155, 155) !important;
-}
-
-/* =================================================================*/
-/* toggling light/dark themes animations */
-/* =================================================================*/
-
 .toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  color: var(--secondary-color);
-  margin-left: 1%;
-  font-size: 30px;
-  vertical-align: super;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.toggle:before {
+.toggle:hover {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+}
+
+.toggle::before {
   font-family: 'Material Design Icons';
   content: '\F0594';
 }
 
-.toggle.active:before {
+.toggle.active::before {
   font-family: 'Material Design Icons';
   content: '\F0599';
 }
 
 .wave {
-  position: absolute;
-  top: 5%;
-  left: 2%;
-  border-radius: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
   width: 2px;
   height: 2px;
   display: block;
   z-index: -1;
-  box-shadow: 0 0 0 0 #1b2440;
-  transition: box-shadow 0.3s cubic-bezier(1, 0.04, 0, 1)
+  box-shadow: 0 0 0 0 var(--wave-color);
+  transition: box-shadow 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  pointer-events: none;
 }
 
 .wave.active {
-  background: #1b2440;
-  box-shadow: 0 0 0 9999px #1b2440;
+  box-shadow: 0 0 0 max(200vw, 200vh) var(--wave-color);
 }
 
 /* =================================================================*/
-/* styling guide appears to introduce interface to user*/
+/* Titlebar Overrides (custom-electron-titlebar)                   */
 /* =================================================================*/
-
-.introjs-tooltiptext {
-  text-align: center;
-}
-
-/* =================================================================*/
-/* Customizing titlebar and menubar using library (custom-electron-titlebar) and overriding it*/
-/* =================================================================*/
-
 .titlebar {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family);
 }
 
 .titlebar.cet-windows,
 .titlebar.cet-linux,
 .menubar-menu-container {
-  background-color: var(--toolbox-bg) !important;
+  background-color: var(--color-titlebar-bg) !important;
 }
 
 .action-item {
-  background-color: var(--toolbox-bg) !important;
+  background-color: transparent !important;
 }
 
 a.action-menu-item {
-  background-color: rgba(0, 0, 0, 0) !important;
+  background-color: transparent !important;
 }
 
 .action-item.focused {
-  background-color: rgba(255, 255, 255, 0.14) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .container-after-titlebar {
-  padding: 6px;
-}
-
-
-/* =================================================================*/
-/* setting image-preview specifications */
-/* =================================================================*/
-
-.image-preview-div {
-  padding: 16px;
-  overflow: auto;
-  overflow: auto;
-  height: 240px;
-  width: 300px;
-  margin-left: 10px;
-}
-
-.image-preview-div img {
-  height: auto;
-  width: 100%;
+  padding: 0;
+  overflow: hidden;
 }
 
 /* =================================================================*/
-/* Customizing scrollbars of image preview div */
+/* Scoped Scrollbars                                               */
 /* =================================================================*/
-
-.image-preview-div::-webkit-scrollbar {
-  width: 20px;
+.custom-sidebar::-webkit-scrollbar,
+.image-preview-div::-webkit-scrollbar,
+.properties-pane::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.image-preview-div::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0);
+.custom-sidebar::-webkit-scrollbar-corner,
+.image-preview-div::-webkit-scrollbar-corner,
+.properties-pane::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
-.image-preview-div::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 70px;
-  border: 4px solid rgba(0, 0, 0, 0);
-  background-clip: content-box;
-  min-width: 32px;
-  min-height: 32px;
+.custom-sidebar::-webkit-scrollbar-thumb,
+.image-preview-div::-webkit-scrollbar-thumb,
+.properties-pane::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar-thumb);
+  border-radius: 4px;
 }
 
-.image-preview-div::-webkit-scrollbar-track {
-  background-color: rgba(0, 0, 0, 0);
+.custom-sidebar::-webkit-scrollbar-thumb:hover,
+.image-preview-div::-webkit-scrollbar-thumb:hover,
+.properties-pane::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-muted);
 }
+
+.custom-sidebar::-webkit-scrollbar-track,
+.image-preview-div::-webkit-scrollbar-track,
+.properties-pane::-webkit-scrollbar-track {
+  background: transparent;
+}
+

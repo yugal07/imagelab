@@ -43,8 +43,8 @@ class DrawEllipse extends OpenCvOperator {
    * @returns {Mat}
    */
   compute(image) {
-    let p1 = new this.cv2.Point(this.#centerPointX, this.#centerPointY);
-    let s1 = new this.cv2.Size(this.#height, this.#width);
+    const p1 = new this.cv2.Point(this.#centerPointX, this.#centerPointY);
+    const s1 = new this.cv2.Size(this.#height, this.#width);
     this.cv2.ellipse(
       image,
       p1,

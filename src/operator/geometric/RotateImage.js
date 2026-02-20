@@ -9,13 +9,13 @@ class RotateImage extends OpenCvOperator {
 
   /**
    * This function sets the values for the rotate image
-   * @param {String} type
+   * @param {String} param
    * @param {number} value
    */
-  setParams(type, value) {
-    if (type === "angle") {
+  setParams(param, value) {
+    if (param === "angle") {
       this.#angle = value;
-    } else if (type === "scale") {
+    } else if (param === "scale") {
       this.#scale = value;
     }
   }
@@ -27,10 +27,10 @@ class RotateImage extends OpenCvOperator {
    * @returns
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
-    let dsize = new this.cv2.Size(image.rows, image.cols);
-    let center = new this.cv2.Point(image.cols / 2, image.rows / 2);
-    let M = this.cv2.getRotationMatrix2D(center, this.#angle, this.#scale);
+    const dst = new this.cv2.Mat();
+    const dsize = new this.cv2.Size(image.rows, image.cols);
+    const center = new this.cv2.Point(image.cols / 2, image.rows / 2);
+    const M = this.cv2.getRotationMatrix2D(center, this.#angle, this.#scale);
     this.cv2.warpAffine(
       image,
       dst,

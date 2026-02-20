@@ -35,18 +35,10 @@ class BoxFilter extends OpenCvOperator {
    * Computes the boxfilter to the mat image
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
-    let point = new this.cv2.Point(this.#pointX, this.#pointY);
-    let size = new this.cv2.Size(this.#height, this.#width);
-    this.cv2.boxFilter(
-      image,
-      dst,
-      this.#depth,
-      size,
-      point,
-      true,
-      this.cv2.BORDER_DEFAULT
-    );
+    const dst = new this.cv2.Mat();
+    const point = new this.cv2.Point(this.#pointX, this.#pointY);
+    const size = new this.cv2.Size(this.#height, this.#width);
+    this.cv2.boxFilter(image, dst, this.#depth, size, point, true, this.cv2.BORDER_DEFAULT);
     return dst;
   }
 }

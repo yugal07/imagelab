@@ -13,12 +13,12 @@ class BilateralFilter extends OpenCvOperator {
     super(type, id);
   }
 
-  setParams(type, value) {
-    if (type === "filterSize") {
+  setParams(param, value) {
+    if (param === "filterSize") {
       this.#d = value;
-    } else if (type === "sigmaColor") {
+    } else if (param === "sigmaColor") {
       this.#sigmaColor = value;
-    } else if (type === "sigmaSpace") {
+    } else if (param === "sigmaSpace") {
       this.#sigmaSpace = value;
     }
   }
@@ -30,7 +30,7 @@ class BilateralFilter extends OpenCvOperator {
    * computes the bilateral filter of the mat image
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
+    const dst = new this.cv2.Mat();
     this.cv2.cvtColor(image, image, this.cv2.COLOR_RGBA2RGB, 0);
     this.cv2.bilateralFilter(
       image,

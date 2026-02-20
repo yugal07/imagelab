@@ -25,9 +25,9 @@ class Morphological extends OpenCvOperator {
    * Mat image
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
-    let M = this.cv2.Mat.ones(5, 5, this.cv2.CV_8U);
-    let anchor = new this.cv2.Point(-1, -1);
+    const dst = new this.cv2.Mat();
+    const M = this.cv2.Mat.ones(5, 5, this.cv2.CV_8U);
+    const anchor = new this.cv2.Point(-1, -1);
     switch (this.#type) {
       case "OPEN":
         this.cv2.morphologyEx(

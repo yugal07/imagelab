@@ -12,12 +12,12 @@ class Dilation extends OpenCvOperator {
     super(type, id);
   }
 
-  setParams(type, value) {
-    if (type === "iteration") {
+  setParams(param, value) {
+    if (param === "iteration") {
       this.#iterations = value;
-    } else if (type === "pointX") {
+    } else if (param === "point_x") {
       this.#pointX = value;
-    } else if (type === "pointY") {
+    } else if (param === "point_y") {
       this.#pointY = value;
     }
   }
@@ -30,9 +30,9 @@ class Dilation extends OpenCvOperator {
    *
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
-    let M = this.cv2.Mat.ones(5, 5, this.cv2.CV_8U);
-    let anchor = new this.cv2.Point(this.#pointX, this.#pointY);
+    const dst = new this.cv2.Mat();
+    const M = this.cv2.Mat.ones(5, 5, this.cv2.CV_8U);
+    const anchor = new this.cv2.Point(this.#pointX, this.#pointY);
     this.cv2.dilate(
       image,
       dst,

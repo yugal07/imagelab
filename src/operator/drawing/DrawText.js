@@ -39,7 +39,7 @@ class DrawText extends OpenCvOperator {
    * @returns {Mat}
    */
   compute(image) {
-    let p1 = new this.cv2.Point(this.#pointX, this.#pointY);
+    const p1 = new this.cv2.Point(this.#pointX, this.#pointY);
     const font = this.cv2.FONT_HERSHEY_SIMPLEX;
     this.cv2.putText(
       image,

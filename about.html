@@ -5,8 +5,42 @@
     <meta charset="utf-8" />
     <style>
         body {
-            background-color: #e8f2fc;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
             text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #1a1a2e;
+        }
+
+        .about-card {
+            background-color: #ffffff;
+            margin: 15px;
+            border-radius: 10px;
+            border: 1px solid #e2e4e9;
+        }
+
+        .about-card p {
+            font-weight: 500;
+            padding: 20px;
+            line-height: 1.6;
+            color: #4a4a5a;
+        }
+
+        .about-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .about-links img {
+            height: 40px;
+        }
+
+        .about-links .mdi-github {
+            font-size: 40px;
+            color: #1a1a2e;
         }
     </style>
     <link rel="stylesheet" href="./node_modules/@mdi/font/css/materialdesignicons.min.css">
@@ -15,11 +49,10 @@
 <body>
     <div>
         <!--Image Lab Logo-->
-        <img src="./assets/logos/Image Lab full logo.png" height="150px">
+        <img src="./assets/logos/Image Lab full logo.png" height="150px" alt="ImageLab">
         <!--Intro about ImageLab-->
-        <div style="background-color: white; margin: 15px; border-radius: 10px;">
-            <p style="font-family: 'Courier New', Courier, monospace; font-weight: bold;
-            padding: 20px;">
+        <div class="about-card">
+            <p>
                 ImageLab is a standalone tool which supports anyone to get started with image processing related
                 concepts
                 and
@@ -30,21 +63,19 @@
                 already comfortable with image processing tasks ImageLab offers a test environment before they move
                 ahead
                 with actual implementation or development.</p>
-            <a href="https://scorelab.org/" target="_blank">
         </div>
-        <!--Score Lab Logo-->
-        <img src="./assets/logos/Score Lab logo.png" alt="SCoRe Lab" style="height:40px; margin-left: 20px;">
-        </a>
-        <!--Github Link-->
-        <a href="https://github.com/scorelab/imagelab" target="_blank">
-            <span class="mdi mdi-github" alt="Github Repository"
-                style="font-size:40px; margin-left: 20px; color: black;"></span>
-        </a>
-        <!--Blockly Library Logo-->
-        <a href="https://developers.google.com/blockly" target="_blank">
-            <img src="./assets/logos/blockly logo.png" alt="Blockly Library" style="height:50px; margin-left: 20px;">
-        </a>
-
+        <!--Links-->
+        <div class="about-links">
+            <a href="https://scorelab.org/" target="_blank">
+                <img src="./assets/logos/Score Lab logo.png" alt="SCoRe Lab">
+            </a>
+            <a href="https://github.com/scorelab/imagelab" target="_blank">
+                <span class="mdi mdi-github"></span>
+            </a>
+            <a href="https://developers.google.com/blockly" target="_blank">
+                <img src="./assets/logos/blockly logo.png" alt="Blockly Library" style="height: 50px;">
+            </a>
+        </div>
     </div>
 </body>
 

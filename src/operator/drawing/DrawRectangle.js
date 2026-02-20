@@ -40,18 +40,13 @@ class DrawRectangle extends OpenCvOperator {
    * @returns
    */
   compute(image) {
-    let p1 = new this.cv2.Point(this.#startPointX, this.#startPointY);
-    let p2 = new this.cv2.Point(this.#endPointX, this.#endPointY);
+    const p1 = new this.cv2.Point(this.#startPointX, this.#startPointY);
+    const p2 = new this.cv2.Point(this.#endPointX, this.#endPointY);
     this.cv2.rectangle(
       image,
       p1,
       p2,
-      [
-        this.#rectangleColor.r,
-        this.#rectangleColor.g,
-        this.#rectangleColor.b,
-        255,
-      ],
+      [this.#rectangleColor.r, this.#rectangleColor.g, this.#rectangleColor.b, 255],
       this.#thickness
     );
     return image;

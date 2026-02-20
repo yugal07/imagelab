@@ -1,22 +1,43 @@
 {
-  "name": "electron-app",
+  "name": "imagelab",
   "version": "1.0.0",
+  "description": "A visual, block-based image processing desktop application using Blockly and OpenCV.js",
   "main": "main.js",
-  "devDependencies": {
-    "electron": "^13.1.6",
-    "electron-reload": "^2.0.0-alpha.1"
+  "author": "SCoRe Lab",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scorelab/imagelab"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "scripts": {
     "start": "electron .",
-    "test": "jest"
+    "start:dev": "electron . --dev",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write '**/*.js'",
+    "format:check": "prettier --check '**/*.js'"
   },
   "dependencies": {
-    "@blockly/continuous-toolbox": "^1.0.12",
-    "@blockly/field-slider": "^2.1.22",
-    "@blockly/plugin-workspace-search": "^4.0.3",
-    "@mdi/font": "^5.9.55",
-    "blockly": "^6.20210701.0",
-    "custom-electron-titlebar": "^3.2.10",
-    "intro.js": "^4.1.0"
+    "@blockly/continuous-toolbox": "^7.0.8",
+    "@blockly/field-angle": "^6.0.8",
+    "@blockly/field-colour": "^6.0.11",
+    "@blockly/field-slider": "^8.0.8",
+    "@blockly/plugin-workspace-search": "^10.1.7",
+    "@mdi/font": "^7.4.47",
+    "blockly": "^12.4.1",
+    "custom-electron-titlebar": "^4.2.8"
+  },
+  "devDependencies": {
+    "electron": "^40.6.0",
+    "electron-reload": "^2.0.0-alpha.1",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.3.0"
   }
 }

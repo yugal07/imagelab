@@ -28,7 +28,7 @@ class GaussianBlur extends OpenCvOperator {
    * of the Mat image
    */
   compute(image) {
-    if (this.#height % 2 == 0) {
+    if (this.#height % 2 === 0) {
       throw new Error("Height should be an odd number!");
     }
     if (this.#width % 2 === 0) {

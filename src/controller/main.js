@@ -1,39 +1,31 @@
-const PROCESS_OPERATIONS = require("../../operations");
-const ReadImage = require("../operator/basic/ReadImage");
-const WriteImage = require("../operator/basic/WriteImage");
-const GrayImage = require("../operator/convertions/GrayImage");
-const GrayToBinary = require("../operator/convertions/GrayToBinary");
-const Blur = require("../operator/blurring/Blur");
-const GaussianBlur = require("../operator/blurring/GaussianBlur");
-const MedianBlur = require("../operator/blurring/MedianBlur");
-const DrawArrowLine = require("../operator/drawing/DrawArrowLine");
-const DrawCircle = require("../operator/drawing/DrawCircle");
-const DrawEllipse = require("../operator/drawing/DrawEllipse");
-const DrawLine = require("../operator/drawing/DrawLine");
-const DrawRectangle = require("../operator/drawing/DrawRectangle");
-const DrawText = require("../operator/drawing/DrawText");
-const BilateralFilter = require("../operator/filtering/BilateralFilter");
-const BoxFilter = require("../operator/filtering/BoxFilter");
-const Dilation = require("../operator/filtering/Dilation");
-const Erosion = require("../operator/filtering/Erosion");
-const Morphological = require("../operator/filtering/Morphological");
-const PyramidDown = require("../operator/filtering/PyramidDown");
-const PyramidUp = require("../operator/filtering/PyramidUp");
-const AffineImage = require("../operator/geometric/AffineImage");
-const ReflectImage = require("../operator/geometric/ReflectImage");
-const RotateImage = require("../operator/geometric/RotateImage");
-const ScaleImage = require("../operator/geometric/ScaleImage");
-const AdaptiveThreshold = require("../operator/thresholding/AdaptiveThresholding");
-const ApplyThreshold = require("../operator/thresholding/ApplyThreshold");
+/**
+ * @module controller/main
+ * @description MainController manages the operator pipeline: maintains an ordered
+ * array of operators, handles block creation/deletion/reordering, and executes
+ * the pipeline sequentially via computeAll().
+ */
 
+const PROCESS_OPERATIONS = require("../registry/operations");
+const OperatorRegistry = require("../registry/operator-registry");
+const { createLogger } = require("../helpers/logger");
+
+const logger = createLogger("Pipeline");
+
+/**
+ * Controls the image processing pipeline. Operators are added when blocks
+ * are created in the Blockly workspace, reordered when blocks are moved,
+ * and executed sequentially when the user clicks "Run".
+ *
+ * @class
+ */
 class MainController {
-  // This private field is used to store the applied operators in the workspace
+  /** @type {OpenCvOperator[]} Ordered array of operators in the pipeline */
   #appliedOperators;
 
-  // This holds the original image added by the user
+  /** @type {HTMLImageElement|null} The source image loaded by the user */
   #originalImage;
 
-  //Instead of directly exporting the image, the processed image is stored
+  /** @type {string|null} Data URL of the last successfully processed image */
   #processedImage;
 
   constructor() {
@@ -43,40 +35,36 @@ class MainController {
   }
 
   /**
+   * Removes an operator from the pipeline by its Blockly block ID.
    *
-   * @param {String} blockId
-   * This function takes the ID of the block and deletes
-   * it from the array
+   * @param {string} blockId - The Blockly block ID to remove
    */
   deleteBlock(blockId) {
-    const index = this.#appliedOperators.findIndex(
-      (item) => item.blockId === blockId
-    );
-    this.#appliedOperators.splice(index, 1);
+    const index = this.#appliedOperators.findIndex((item) => item.blockId === blockId);
+    if (index !== -1) {
+      logger.info("Operator removed", { blockId, type: this.#appliedOperators[index].type });
+      this.#appliedOperators.splice(index, 1);
+    }
   }
 
   /**
-   * This function is responsible for making the blocks in order
-   * according to the order in the workspace
-   * @param {String} parent
-   * @param {String} child
-   * @returns none
+   * Reorders operators so that `child` is placed immediately after `parent`.
+   * This is called when blocks are connected/moved in the Blockly workspace.
+   * The algorithm finds both operators by type, removes the child from its
+   * current position, and inserts it right after the parent.
+   *
+   * @param {string} parent - Block type string of the parent operator
+   * @param {string} child - Block type string of the child operator
    */
   arrangeBlocks(parent, child) {
-    const parentIndex = this.#appliedOperators.findIndex(
-      (item) => item.type === parent
-    );
-    const childIndex = this.#appliedOperators.findIndex(
-      (item) => item.type === child
-    );
+    const parentIndex = this.#appliedOperators.findIndex((item) => item.type === parent);
+    const childIndex = this.#appliedOperators.findIndex((item) => item.type === child);
 
-    // If the parent is not found then the index will be -1
-    // If the child is not found then the index will be -1
     if (parentIndex === -1 || childIndex === -1) {
       return;
     }
 
-    // If the child is next to the parent then we do need to done anything
+    // Already in correct position
     if (parentIndex + 1 === childIndex) {
       return;
     }
@@ -87,170 +75,56 @@ class MainController {
   }
 
   /**
-   * This method set the original image
-   * @param {Mat Image} image
+   * Sets the source image for the pipeline.
+   *
+   * @param {HTMLImageElement} image - The loaded image element
    */
   setOriginalImage(image) {
     this.#originalImage = image;
+    logger.info("Original image set");
   }
 
   /**
-   * This methods returns the original image
-   * @returns Image
+   * Returns the source image.
+   *
+   * @returns {HTMLImageElement|null}
    */
   getOriginalImage() {
     return this.#originalImage;
   }
 
   /**
-   * 
+   * Returns the last processed image data URL.
+   *
+   * @returns {string|null}
    */
   getProcessedImage() {
     return this.#processedImage;
   }
 
   /**
-   * This function generates the operator object accroding to the string passed
-   * @param {String} operatorType
-   * @returns
+   * Creates and adds an operator to the pipeline based on a Blockly block type.
+   * Uses the OperatorRegistry to instantiate the correct operator class.
+   *
+   * @param {string} operatorType - The Blockly block type string (e.g., "blurring_applyblur")
+   * @param {string} id - The Blockly block ID
    */
   addOperator(operatorType, id) {
-    switch (operatorType) {
-      case PROCESS_OPERATIONS.READIMAGE:
-        this.#appliedOperators.push(
-          new ReadImage(PROCESS_OPERATIONS.READIMAGE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.WRITEIMAGE:
-        this.#appliedOperators.push(
-          new WriteImage(PROCESS_OPERATIONS.WRITEIMAGE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.GRAYIMAGE:
-        this.#appliedOperators.push(
-          new GrayImage(PROCESS_OPERATIONS.GRAYIMAGE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.GRAYTOBINARY:
-        this.#appliedOperators.push(
-          new GrayToBinary(PROCESS_OPERATIONS.GRAYTOBINARY, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.REFLECTIMAGE:
-        this.#appliedOperators.push(
-          new ReflectImage(PROCESS_OPERATIONS.REFLECTIMAGE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.ROTATEIMAGE:
-        this.#appliedOperators.push(
-          new RotateImage(PROCESS_OPERATIONS.ROTATEIMAGE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.AFFINEIMAGE:
-        this.#appliedOperators.push(
-          new AffineImage(PROCESS_OPERATIONS.AFFINEIMAGE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.SCALEIMAGE:
-        this.#appliedOperators.push(
-          new ScaleImage(PROCESS_OPERATIONS.SCALEIMAGE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.DRAWLINE:
-        this.#appliedOperators.push(
-          new DrawLine(PROCESS_OPERATIONS.DRAWLINE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.DRAWELLIPSE:
-        this.#appliedOperators.push(
-          new DrawEllipse(PROCESS_OPERATIONS.DRAWELLIPSE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.DRAWARROWLINE:
-        this.#appliedOperators.push(
-          new DrawArrowLine(PROCESS_OPERATIONS.DRAWARROWLINE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.DRAWTEXT:
-        this.#appliedOperators.push(
-          new DrawText(PROCESS_OPERATIONS.DRAWTEXT, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.DRAWCIRCLE:
-        this.#appliedOperators.push(
-          new DrawCircle(PROCESS_OPERATIONS.DRAWCIRCLE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.DRAWRECTANGLE:
-        this.#appliedOperators.push(
-          new DrawRectangle(PROCESS_OPERATIONS.DRAWRECTANGLE, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.BLURIMAGE:
-        this.#appliedOperators.push(new Blur(PROCESS_OPERATIONS.BLURIMAGE, id));
-        break;
-      case PROCESS_OPERATIONS.GAUSSIANBLUR:
-        this.#appliedOperators.push(
-          new GaussianBlur(PROCESS_OPERATIONS.GAUSSIANBLUR, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.MEDIANBLUR:
-        this.#appliedOperators.push(
-          new MedianBlur(PROCESS_OPERATIONS.MEDIANBLUR, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.BILATERALFILTER:
-        this.#appliedOperators.push(
-          new BilateralFilter(PROCESS_OPERATIONS.BILATERALFILTER, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.BOXFILTER:
-        this.#appliedOperators.push(
-          new BoxFilter(PROCESS_OPERATIONS.BOXFILTER, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.PYRAMIDUP:
-        this.#appliedOperators.push(
-          new PyramidUp(PROCESS_OPERATIONS.PYRAMIDUP, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.PYRAMIDDOWN:
-        this.#appliedOperators.push(
-          new PyramidDown(PROCESS_OPERATIONS.PYRAMIDDOWN, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.EROSION:
-        this.#appliedOperators.push(
-          new Erosion(PROCESS_OPERATIONS.EROSION, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.DILATION:
-        this.#appliedOperators.push(
-          new Dilation(PROCESS_OPERATIONS.DILATION, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.MORPHOLOGICAL:
-        this.#appliedOperators.push(
-          new Morphological(PROCESS_OPERATIONS.MORPHOLOGICAL, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.ADAPTIVETHRESHOLDING:
-        this.#appliedOperators.push(
-          new AdaptiveThreshold(PROCESS_OPERATIONS.ADAPTIVETHRESHOLDING, id)
-        );
-        break;
-      case PROCESS_OPERATIONS.SIMPLETHRESHOLDING:
-        this.#appliedOperators.push(
-          new ApplyThreshold(PROCESS_OPERATIONS.SIMPLETHRESHOLDING, id)
-        );
-        break;
-      default:
-        break;
+    const operator = OperatorRegistry.create(operatorType, id);
+    if (operator) {
+      this.#appliedOperators.push(operator);
+      logger.info("Operator added", { type: operatorType, id });
     }
   }
 
   /**
-   * This method compute and generate the output of the selected operators
+   * Executes all operators in the pipeline sequentially. Each operator receives
+   * the output of the previous one. The pipeline must start with a ReadImage
+   * block and an image must be loaded.
+   *
+   * @throws {Error} If no operators are in the pipeline
+   * @throws {Error} If the first operator is not ReadImage
+   * @throws {Error} If no image has been loaded
    */
   computeAll() {
     if (this.#appliedOperators.length === 0) {
@@ -264,40 +138,50 @@ class MainController {
     if (this.#originalImage === null) {
       throw Error("Image is not set");
     }
-    var image = this.#originalImage;
-    this.#appliedOperators.forEach((item) => {
+
+    logger.info("Pipeline executing", { operatorCount: this.#appliedOperators.length });
+
+    let image = this.#originalImage;
+    this.#appliedOperators.forEach((item, index) => {
       if (image) {
-        image = item.compute(image);
-        if(image) {
-          this.#processedImage = image;
+        logger.debug("Executing operator", { step: index, type: item.type });
+        try {
+          image = item.compute(image);
+          if (image) {
+            this.#processedImage = image;
+          }
+        } catch (error) {
+          logger.error("Pipeline failed at operator", { step: index, type: item.type, error: error.message });
+          throw error;
         }
       }
     });
+
+    logger.info("Pipeline completed successfully");
   }
 
   /**
-   * This function changes the attributes of the
-   * Operator type
-   * @param {String} blockType
-   * @param {String} paramType
-   * @param {String} value
+   * Updates parameters on a specific operator in the pipeline.
+   *
+   * @param {string} blockType - The Blockly block type to find
+   * @param {string} paramType - The parameter name to update
+   * @param {*} value - The new parameter value
    */
   changeValuesOfBlocks(blockType, paramType, value) {
-    const block = this.#appliedOperators.find(
-      (item) => item.type === blockType
-    );
+    const block = this.#appliedOperators.find((item) => item.type === blockType);
     if (block) {
-      try {
-        block.setParams(paramType, value);
-      } catch (error) {
-        throw error;
-      }
+      block.setParams(paramType, value);
+      logger.debug("Parameter changed", { blockType, paramType, value });
     }
   }
 
-  resetTheWorkpace() {
+  /**
+   * Clears all operators and resets the image state.
+   */
+  resetTheWorkspace() {
     this.#appliedOperators = [];
     this.#originalImage = null;
+    logger.info("Workspace reset");
   }
 }
 

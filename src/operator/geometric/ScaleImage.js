@@ -9,13 +9,13 @@ class ScaleImage extends OpenCvOperator {
 
   /**
    * This methods sets the values of the class
-   * @param {String} type
+   * @param {String} param
    * @param {String} value
    */
-  setParams(type, value) {
-    if (type === "fx") {
+  setParams(param, value) {
+    if (param === "fx") {
       this.#xaxis = value;
-    } else if (type === "fy") {
+    } else if (param === "fy") {
       this.#yaxis = value;
     }
   }
@@ -27,19 +27,12 @@ class ScaleImage extends OpenCvOperator {
    * This function scale up the image
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
-    let dsize = new this.cv2.Size(
-      Math.round(image.rows * this.#xaxis),
-      Math.round(image.cols * this.#yaxis)
+    const dst = new this.cv2.Mat();
+    const dsize = new this.cv2.Size(
+      Math.round(image.cols * this.#xaxis),
+      Math.round(image.rows * this.#yaxis)
     );
-    this.cv2.resize(
-      image,
-      dst,
-      dsize,
-      this.#xaxis,
-      this.#yaxis,
-      this.cv2.INTER_AREA
-    );
+    this.cv2.resize(image, dst, dsize, this.#xaxis, this.#yaxis, this.cv2.INTER_AREA);
     return dst;
   }
 }

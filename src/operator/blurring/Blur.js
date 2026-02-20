@@ -23,9 +23,9 @@ class Blur extends OpenCvOperator {
       this.#width = value;
     } else if (param === "heightSize") {
       this.#height = value;
-    } else if (param === "pointX") {
+    } else if (param === "pointX" || param === "point_x") {
       this.#pointX = value;
-    } else if (param === "pointY") {
+    } else if (param === "pointY" || param === "point_y") {
       this.#pointY = value;
     }
   }

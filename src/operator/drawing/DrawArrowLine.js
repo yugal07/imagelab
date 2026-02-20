@@ -33,7 +33,15 @@ class DrawArrowLine extends OpenCvOperator {
   }
 
   compute(image) {
-    // There is no function in opencv.js to draw an arrowed line
+    const p1 = new this.cv2.Point(this.#startingPointX, this.#startingPointY);
+    const p2 = new this.cv2.Point(this.#endingPointX, this.#endingPointY);
+    this.cv2.arrowedLine(
+      image,
+      p1,
+      p2,
+      [this.#lineColor.r, this.#lineColor.g, this.#lineColor.b, 255],
+      this.#thickness
+    );
     return image;
   }
 }

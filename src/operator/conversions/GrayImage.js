@@ -14,7 +14,7 @@ class GrayImage extends OpenCvOperator {
    * This function grays the image
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
+    const dst = new this.cv2.Mat();
     this.cv2.cvtColor(image, dst, this.cv2.COLOR_BGR2GRAY);
     return dst;
   }

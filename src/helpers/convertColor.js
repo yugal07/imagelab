@@ -1,11 +1,16 @@
 /**
- * This function is responsible for generating r,g,b values
- * for a hexadecimal color string
- * @param {string} hex
- * @returns object
+ * @module helpers/convertColor
+ * @description Color conversion utilities for translating between hex and RGB formats.
+ */
+
+/**
+ * Converts a hexadecimal color string to an RGB object.
+ *
+ * @param {string} hex - Hex color string (e.g., "#FF0000" or "FF0000")
+ * @returns {{ r: number, g: number, b: number }|null} RGB object or null if invalid
  */
 function hexToRgb(hex) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
         r: parseInt(result[1], 16),

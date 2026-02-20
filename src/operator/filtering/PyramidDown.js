@@ -19,8 +19,8 @@ class PyramidDown extends OpenCvOperator {
    * Computes the PyramidDown filter to the Mat image
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
-    let size = new this.cv2.Size(image.cols * 2, image.rows * 2);
+    const dst = new this.cv2.Mat();
+    const size = new this.cv2.Size(image.cols * 2, image.rows * 2);
     this.cv2.pyrDown(image, dst, size, this.cv2.BORDER_DEFAULT);
     return dst;
   }

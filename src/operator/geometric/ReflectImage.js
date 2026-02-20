@@ -11,7 +11,7 @@ class ReflectImage extends OpenCvOperator {
     super(type, id);
   }
 
-  setParams(type, value) {
+  setParams(param, value) {
     this.#direction = value;
   }
 
@@ -23,23 +23,16 @@ class ReflectImage extends OpenCvOperator {
    */
   compute(image) {
     const dst = new this.cv2.Mat();
-
-    const mapX = new this.cv2.Mat(image.size(), this.cv2.CV_32F);
-    const mapY = new this.cv2.Mat(image.size(), this.cv2.CV_32F);
-
-    // const bufferX = [int(mapX.total() * mapX.channels())];
-    // mapX.get(0, 0, bufferX);
-    // const bufferY = [int(mapY.total() * mapY.channels())];
-    // mapY.get(0, 0, bufferY);
-    // for (let i = 0; i < mapX.rows(); i++) {
-    //   for (let j = 0; j < mapX.cols(); j++) {
-    //     buffX[i * mapX.cols() + j] = j;
-    //     buffY[i * mapY.cols() + j] = mapY.rows() - i;
-    //   }
-    // }
-    // mapX.put(0, 0, buffX);
-    // mapY.put(0, 0, buffY);
-    return image;
+    let flipCode;
+    if (this.#direction === "X") {
+      flipCode = 0; // Flip around X axis (vertical flip)
+    } else if (this.#direction === "Y") {
+      flipCode = 1; // Flip around Y axis (horizontal flip)
+    } else {
+      flipCode = -1; // Flip around both axes
+    }
+    this.cv2.flip(image, dst, flipCode);
+    return dst;
   }
 }
 

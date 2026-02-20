@@ -9,13 +9,13 @@ class GrayToBinary extends OpenCvOperator {
 
   /**
    * This methods sets the values of the class
-   * @param {String} type
+   * @param {String} param
    * @param {String} value
    */
-  setParams(type, value) {
-    if (type === "thresholdValue") {
+  setParams(param, value) {
+    if (param === "thresholdValue") {
       this.#thresholdValue = value;
-    } else if (type === "maxValue") {
+    } else if (param === "maxValue") {
       this.#maxValue = value;
     }
   }
@@ -27,10 +27,10 @@ class GrayToBinary extends OpenCvOperator {
    * This function converts gray image to a binary one
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
+    const dst = new this.cv2.Mat();
 
     this.cv2.threshold(image, dst, this.#thresholdValue, this.#maxValue, this.cv2.THRESH_BINARY);
-    
+
     return dst;
   }
 }

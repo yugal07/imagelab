@@ -1,29 +1,48 @@
-"use strict";
+/**
+ * @module main
+ * @description Electron main process. Creates the BrowserWindow, loads the
+ * application, and manages the application menu.
+ */
 
-console.log("main process working");
+"use strict";
 
 const electron = require("electron");
 const path = require("path");
+const { createLogger } = require("./src/helpers/logger");
+const { setupTitlebar, attachTitlebarToWindow } = require("custom-electron-titlebar/main");
 
-const { app, BrowserWindow, Menu, shell } = electron;
+const logger = createLogger("Main");
 
-let splash;
+const { app, BrowserWindow, Menu, shell, ipcMain, dialog } = electron;
 
-require("electron-reload")(__dirname, {
-  electron: path.join(__dirname, "node_modules", ".bin", "electron"),
-  hardResetMethod: "exit",
-});
+// Initialize custom titlebar (must be called before window creation)
+setupTitlebar();
+
+// Hot-reload in development only
+if (process.argv.includes("--dev")) {
+  try {
+    require("electron-reload")(__dirname, {
+      electron: path.join(__dirname, "node_modules", ".bin", "electron"),
+      hardResetMethod: "exit",
+    });
+  } catch (_err) {
+    logger.warn("electron-reload failed to initialize");
+  }
+}
 
 app.on("ready", () => {
+  logger.info("App ready, creating windows");
+
   // Main window properties
   let mainWindow = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      enableRemoteModule: true,
+      sandbox: false,
+      preload: path.join(__dirname, "preload.js"),
     },
-    height: 800,
-    width: 1500,
+    height: 1080,
+    width: 1920,
     minWidth: 1100,
     minHeight: 800,
     show: false,
@@ -32,53 +51,52 @@ app.on("ready", () => {
     titleBarStyle: "hidden",
   });
 
-  // Splash window properties
-  splash = new BrowserWindow({
-    width: 600,
-    height: 400,
-    transparent: true,
-    frame: false,
-    alwaysOnTop: true,
-    icon: __dirname + "/assets/logos/Image Lab Icon.png",
-  });
-  splash.loadURL(`file://${__dirname}/splash.html`);
+  // Attach titlebar event listeners (fullscreen, focus)
+  attachTitlebarToWindow(mainWindow);
+
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
-  // This line needs to removed after the development
-  mainWindow.webContents.openDevTools();
+  // Open DevTools only in development mode
+  if (process.argv.includes("--dev")) {
+    mainWindow.webContents.openDevTools();
+  }
 
-  // when main window is loaded and ready to be displayed, splash will end and main winndow appears
+  // Show main window once content has rendered
   mainWindow.once("ready-to-show", () => {
-    setTimeout(function () {
-      splash.destroy();
-      mainWindow.show();
-    }, 3000);
+    mainWindow.show();
+    logger.info("Main window shown");
   });
 
   mainWindow.on("closed", function () {
     mainWindow = null;
   });
 
-  // Saving window opens when user try to exit from application to warn him if he wants to save/don't save his work
+  // Save dialog when user tries to close the application
   mainWindow.on("close", function (e) {
-    const choice = require("electron").dialog.showMessageBoxSync(this, {
+    const choice = dialog.showMessageBoxSync(this, {
       type: "question",
       buttons: ["Save", "Don't save", "Cancel"],
       title: "Image Lab",
       message: "Do you want to save changes to ........ ?",
     });
-    if (choice == 2) {
+    if (choice === 2) {
+      logger.info("Close cancelled by user");
       e.preventDefault();
     }
   });
 });
 
-// The new menu configuration
+// IPC handlers — renderer calls these via ipcRenderer.invoke()
+ipcMain.handle("dialog:showMessageBox", async (_event, options) => {
+  logger.debug("IPC: dialog:showMessageBox", { title: options.title });
+  const result = await dialog.showMessageBox(options);
+  return result;
+});
 
+// Menu configuration
 const isMac = process.platform === "darwin";
 
 const template = [
-  // { role: 'appMenu' }
   ...(isMac
     ? [
         {
@@ -97,7 +115,6 @@ const template = [
         },
       ]
     : []),
-  // { role: 'fileMenu' }
   {
     label: "File",
     submenu: [
@@ -107,7 +124,6 @@ const template = [
       isMac ? { role: "close" } : { role: "quit" },
     ],
   },
-  // { role: 'viewMenu' }
   {
     label: "View",
     submenu: [
@@ -132,7 +148,6 @@ const template = [
       {
         label: "Learn More",
         click: async () => {
-          const { shell } = require("electron");
           await shell.openExternal("https://github.com/scorelab/imagelab");
         },
       },
@@ -143,9 +158,10 @@ const template = [
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 
-// function called when we need to show about window
+/**
+ * Opens the About window showing application info and external links.
+ */
 function aboutWindowPreview() {
-  // About-window properties
   let aboutWindow = new BrowserWindow({
     height: 520,
     width: 600,
@@ -163,15 +179,12 @@ function aboutWindowPreview() {
   aboutWindow.on("closed", function () {
     aboutWindow = null;
   });
-  // this part solves the problem of opening links in about window in the same window
-  // so when you click a link in about menu, it opens in an external user default browser
-  aboutWindow.webContents.on("new-window", function (e, url) {
-    // make sure local urls stay in electron perimeter
-    if ("file://" === url.substr(0, "file://".length)) {
-      return;
+
+  // Open external links in the user's default browser instead of Electron
+  aboutWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (!url.startsWith("file://")) {
+      shell.openExternal(url);
     }
-    // and open every other protocols on the browser
-    e.preventDefault();
-    shell.openExternal(url);
+    return { action: "deny" };
   });
 }

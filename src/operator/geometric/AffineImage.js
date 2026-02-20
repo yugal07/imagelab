@@ -17,14 +17,9 @@ class AffineImage extends OpenCvOperator {
    * to the Processed Mat image
    */
   compute(image) {
-    let dst = new this.cv2.Mat();
-    let M = this.cv2.matFromArray(
-      2,
-      3,
-      this.cv2.CV_64FC1,
-      [1, 0, 50, 0, 1, 100]
-    );
-    let dsize = new this.cv2.Size(image.rows, image.cols);
+    const dst = new this.cv2.Mat();
+    const M = this.cv2.matFromArray(2, 3, this.cv2.CV_64FC1, [1, 0, 50, 0, 1, 100]);
+    const dsize = new this.cv2.Size(image.rows, image.cols);
     this.cv2.warpAffine(
       image,
       dst,
