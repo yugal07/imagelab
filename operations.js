@@ -23,6 +23,7 @@ const PROCESS_OPERATIONS = {
   EROSION: "filtering_erosion",
   DILATION: "filtering_dilation",
   MORPHOLOGICAL: "filtering_morphological",
+  CANNYEDGE: "filtering_cannyedge",
   ADAPTIVETHRESHOLDING: "thresholding_adaptivethreshold",
   SIMPLETHRESHOLDING: "thresholding_applythreshold",
 };

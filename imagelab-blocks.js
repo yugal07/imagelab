@@ -870,6 +870,37 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: "",
   },
 
+  {
+    type: "filtering_cannyedge",
+    message0: "Canny edge detection %1 threshold1 %2 threshold2 %3",
+    args0: [
+      {
+        type: "input_dummy",
+      },
+      {
+        type: "field_number",
+        name: "threshold1",
+        value: 50,
+        min: 0,
+        max: 255,
+      },
+      {
+        type: "field_number",
+        name: "threshold2",
+        value: 150,
+        min: 0,
+        max: 255,
+      },
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 135,
+    tooltip:
+      "Applies Canny edge detection to the image. threshold1 and threshold2 are the lower and upper bounds for the hysteresis procedure. A higher threshold2 detects fewer, stronger edges.",
+    helpUrl: "",
+  },
+
   //Thresholding
   {
     type: "thresholding_applyborders",

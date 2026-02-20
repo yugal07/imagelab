@@ -17,6 +17,7 @@ const opencvMock = {
       Size: jest.fn(),
       Point: jest.fn(),
       dilate: jest.fn(),
+      Canny: jest.fn(),
       BORDER_CONSTANT: 1,
       morphologyDefaultBorderValue: jest.fn(),
     },

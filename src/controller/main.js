@@ -19,6 +19,7 @@ const Erosion = require("../operator/filtering/Erosion");
 const Morphological = require("../operator/filtering/Morphological");
 const PyramidDown = require("../operator/filtering/PyramidDown");
 const PyramidUp = require("../operator/filtering/PyramidUp");
+const CannyEdge = require("../operator/filtering/CannyEdge");
 const AffineImage = require("../operator/geometric/AffineImage");
 const ReflectImage = require("../operator/geometric/ReflectImage");
 const RotateImage = require("../operator/geometric/RotateImage");
@@ -232,6 +233,11 @@ class MainController {
       case PROCESS_OPERATIONS.MORPHOLOGICAL:
         this.#appliedOperators.push(
           new Morphological(PROCESS_OPERATIONS.MORPHOLOGICAL, id)
+        );
+        break;
+      case PROCESS_OPERATIONS.CANNYEDGE:
+        this.#appliedOperators.push(
+          new CannyEdge(PROCESS_OPERATIONS.CANNYEDGE, id)
         );
         break;
       case PROCESS_OPERATIONS.ADAPTIVETHRESHOLDING:
